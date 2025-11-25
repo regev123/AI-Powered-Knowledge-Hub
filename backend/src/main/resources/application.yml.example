@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: knowledge-hub
+  web:
+    cors:
+      allowed-origins: http://localhost:3000
+  servlet:
+    multipart:
+      max-file-size: 20MB  # Maximum size per file (PDF, Word documents, etc.)
+      max-request-size: 20MB  # Maximum size for entire request
+  datasource:
+    url: jdbc:h2:mem:knowledgehubdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+llm:
+  provider: openai  # Using OpenAI service
+  openai:
+    api:
+      key: ""  # Add your OpenAI API key here
+
+logging:
+  level:
+    com.yashir.knowledgehub: INFO
+    org.springframework.web: INFO
+
