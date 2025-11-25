@@ -107,7 +107,149 @@ The AI-Powered Knowledge Hub follows a **layered architecture** pattern with cle
 
 ### Class Diagram
 
-![Full System UML Diagram](./Full-System-UML-Diagram.drawio.png)
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           Controllers Layer                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌──────────────────────────┐      ┌──────────────────────────┐            │
+│  │   DocumentController     │      │     UserController       │            │
+│  ├──────────────────────────┤      ├──────────────────────────┤            │
+│  │ -documentService         │      │ -userService             │            │
+│  │ -contentTypeService      │      ├──────────────────────────┤            │
+│  │ -documentQAService       │      │ +getAllUsers()           │            │
+│  ├──────────────────────────┤      │ +createUser()            │            │
+│  │ +getAllDocuments()       │      │ +updateUserRole()        │            │
+│  │ +uploadDocument()        │      └──────────────────────────┘            │
+│  │ +viewDocument()          │                                               │
+│  │ +deleteDocument()        │                                               │
+│  │ +askQuestion()           │                                               │
+│  └──────────────────────────┘                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                            │                    │
+                            │                    │
+                            ▼                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            Services Layer                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌──────────────────────────┐      ┌──────────────────────────┐            │
+│  │   DocumentService         │      │      UserService         │            │
+│  │  implements              │      │  implements              │            │
+│  │  DocumentServiceInterface│      │  UserServiceInterface    │            │
+│  ├──────────────────────────┤      ├──────────────────────────┤            │
+│  │ -documentRepository      │      │ -userRepository          │            │
+│  │ -documentMapper          │      │ -userMapper               │            │
+│  │ -fileStorageService      │      ├──────────────────────────┤            │
+│  │ -contentExtractionService│      │ +getAllUsers()           │            │
+│  ├──────────────────────────┤      │ +createUser()            │            │
+│  │ +getAllDocuments()        │      │ +updateUserRole()        │            │
+│  │ +uploadDocument()         │      └──────────────────────────┘            │
+│  │ +getDocumentById()        │                                               │
+│  │ +downloadDocument()       │                                               │
+│  │ +deleteDocument()         │                                               │
+│  └──────────────────────────┘                                               │
+│                            │                                                 │
+│  ┌──────────────────────────┐                                               │
+│  │    DocumentQAService      │                                               │
+│  ├──────────────────────────┤                                               │
+│  │ -documentService          │                                               │
+│  │ -llmService              │                                               │
+│  ├──────────────────────────┤                                               │
+│  │ +answerQuestion()        │                                               │
+│  └──────────────────────────┘                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                            │                    │                    │
+                            │                    │                    │
+                            ▼                    ▼                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        LLM Integration Layer                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌──────────────────────────┐      ┌──────────────────────────┐            │
+│  │   LLMServiceInterface    │      │     OpenAIService        │            │
+│  │      <<interface>>        │      │  implements              │            │
+│  ├──────────────────────────┤      │  LLMServiceInterface      │            │
+│  │ +identifyDocumentType()  │      ├──────────────────────────┤            │
+│  │ +answerQuestion()        │      │ -openAIClient            │            │
+│  └──────────────────────────┘      │ -requestBuilder          │            │
+│            ▲                        │ -responseParser           │            │
+│            │                        ├──────────────────────────┤            │
+│            │                        │ +identifyDocumentType()  │            │
+│            │                        │ +answerQuestion()        │            │
+│            │                        └──────────────────────────┘            │
+│            │                                                                 │
+│  ┌─────────┴──────────────────────────┐                                    │
+│  │      MockLLMService                 │                                    │
+│  │  implements LLMServiceInterface    │                                    │
+│  └─────────────────────────────────────┘                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        Data Access Layer                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌──────────────────────────┐      ┌──────────────────────────┐            │
+│  │  DocumentRepository       │      │    UserRepository        │            │
+│  │      <<interface>>         │      │      <<interface>>        │            │
+│  ├──────────────────────────┤      ├──────────────────────────┤            │
+│  │ +findAll()                │      │ +findAll()               │            │
+│  │ +findById()               │      │ +findById()              │            │
+│  │ +save()                   │      │ +save()                  │            │
+│  │ +deleteById()             │      │ +existsByName()          │            │
+│  │ +existsByName()           │      └──────────────────────────┘            │
+│  └──────────────────────────┘                    │                         │
+│            │                                      │                         │
+│            └──────────────────┬──────────────────┘                         │
+│                               ▼                                             │
+│  ┌──────────────────────────────────────────────────────────┐              │
+│  │                      Entities                             │              │
+│  ├──────────────────────────┬───────────────────────────────┤              │
+│  │       Document            │           User                │              │
+│  ├──────────────────────────┤      ├────────────────────────┤              │
+│  │ -Long id                 │      │ -Long id                │              │
+│  │ -String name             │      │ -String name            │              │
+│  │ -DocumentType type       │      │ -UserRole role          │              │
+│  │ -String fileName         │      └────────────────────────┘              │
+│  │ -String filePath         │                                               │
+│  │ -String uploadedBy       │                                               │
+│  │ -LocalDateTime uploadDate│                                               │
+│  └──────────────────────────┘                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      Supporting Services                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌──────────────────────────┐  ┌──────────────────────────┐              │
+│  │  FileStorageService       │  │ DocumentContentExtraction │              │
+│  ├──────────────────────────┤  │        Service            │              │
+│  │ +storeFile()             │  ├──────────────────────────┤              │
+│  │ +loadFileAsResource()    │  │ +extractContent()        │              │
+│  │ +deleteFile()            │  └──────────────────────────┘              │
+│  └──────────────────────────┘                                               │
+│                                                                              │
+│  ┌──────────────────────────┐  ┌──────────────────────────┐              │
+│  │      RoleAspect          │  │  RoleValidationService    │              │
+│  ├──────────────────────────┤  ├──────────────────────────┤              │
+│  │ -roleValidationService   │  │ -requestContextService   │              │
+│  ├──────────────────────────┤  ├──────────────────────────┤              │
+│  │ +validateRole()          │  │ +validateRole()          │              │
+│  └──────────────────────────┘  └──────────────────────────┘              │
+│                                                                              │
+│  ┌──────────────────────────┐                                               │
+│  │  GlobalExceptionHandler  │                                               │
+│  ├──────────────────────────┤                                               │
+│  │ +handleNotFoundException()│                                              │
+│  │ +handleDocumentException()│                                              │
+│  │ +handleSecurityException()│                                              │
+│  └──────────────────────────┘                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Sequence Diagrams
 
 ![Document Upload Sequence Diagram](./Sequence-Diagram-Document-Upload-Flow.drawio.png)
 

@@ -1,0 +1,133 @@
+classDiagram
+    class DocumentController {
+        -DocumentServiceInterface documentService
+        -ContentTypeService contentTypeService
+        -DocumentQAService documentQAService
+        +getAllDocuments() ResponseEntity~List~DocumentResponse~~
+        +uploadDocument(DocumentUploadRequest, String) ResponseEntity~DocumentResponse~
+        +viewDocument(Long) ResponseEntity~Resource~
+        +deleteDocument(Long) ResponseEntity~Void~
+        +askQuestion(QuestionRequest) ResponseEntity~QuestionResponse~
+    }
+    
+    class UserController {
+        -UserServiceInterface userService
+        +getAllUsers() ResponseEntity~List~UserResponse~~
+        +createUser(UserCreateRequest) ResponseEntity~UserResponse~
+        +updateUserRole(UserUpdateRoleRequest) ResponseEntity~UserResponse~
+    }
+    
+    class DocumentService {
+        -DocumentRepository documentRepository
+        -DocumentMapperInterface documentMapper
+        -FileStorageService fileStorageService
+        -DocumentContentExtractionService contentExtractionService
+        +getAllDocuments() List~DocumentResponse~
+        +uploadDocument(DocumentUploadRequest, String) DocumentResponse
+        +getDocumentById(Long) DocumentResponse
+        +downloadDocument(Long) Resource
+        +deleteDocument(Long) void
+    }
+    
+    class DocumentServiceInterface {
+        <<interface>>
+        +getAllDocuments() List~DocumentResponse~
+        +uploadDocument(DocumentUploadRequest, String) DocumentResponse
+        +downloadDocument(Long) Resource
+    }
+    
+    class UserService {
+        -UserRepository userRepository
+        -UserMapperInterface userMapper
+        +getAllUsers() List~UserResponse~
+        +createUser(UserCreateRequest) UserResponse
+        +updateUserRole(UserUpdateRoleRequest) UserResponse
+    }
+    
+    class UserServiceInterface {
+        <<interface>>
+        +getAllUsers() List~UserResponse~
+        +createUser(UserCreateRequest) UserResponse
+        +updateUserRole(UserUpdateRoleRequest) UserResponse
+    }
+    
+    class DocumentQAService {
+        -DocumentServiceInterface documentService
+        -LLMServiceInterface llmService
+        +answerQuestion(QuestionRequest) QuestionResponse
+    }
+    
+    class LLMServiceInterface {
+        <<interface>>
+        +generateAnswer(String, String) String
+    }
+    
+    class OpenAIService {
+        -OpenAIClient openAIClient
+        -OpenAIRequestBuilder requestBuilder
+        -OpenAIResponseParser responseParser
+        +generateAnswer(String, String) String
+    }
+    
+    class DocumentRepository {
+        <<interface>>
+        +findAll() List~Document~
+        +findById(Long) Optional~Document~
+        +save(Document) Document
+        +deleteById(Long) void
+        +existsByName(String) boolean
+    }
+    
+    class UserRepository {
+        <<interface>>
+        +findAll() List~User~
+        +findById(Long) Optional~User~
+        +save(User) User
+        +existsByName(String) boolean
+    }
+    
+    class Document {
+        -Long id
+        -String name
+        -DocumentType type
+        -String fileName
+        -String filePath
+        -String uploadedBy
+        -LocalDateTime uploadDate
+    }
+    
+    class User {
+        -Long id
+        -String name
+        -UserRole role
+    }
+    
+    class RoleAspect {
+        -RoleValidationService roleValidationService
+        +validateRole(JoinPoint) void
+    }
+    
+    class RoleValidationService {
+        -RequestContextService requestContextService
+        +validateRole(UserRole) void
+    }
+    
+    class GlobalExceptionHandler {
+        +handleNotFoundException(BaseNotFoundException) ErrorResponse
+        +handleDocumentException(DocumentException) ErrorResponse
+        +handleSecurityException(UnauthorizedException) ErrorResponse
+    }
+    
+    class FileStorageService {
+        +storeFile(MultipartFile, String) String
+        +loadFileAsResource(String) Resource
+        +deleteFile(String) void
+    }
+    
+    class DocumentContentExtractionService {
+        +extractContent(MultipartFile) String
+    }
+    
+    class ContentTypeService {
+        +getContentType(String) String
+    }
