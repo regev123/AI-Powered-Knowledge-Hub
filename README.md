@@ -269,15 +269,6 @@ Each class has a single, well-defined responsibility:
 - **`DocumentTypePromptBuilder`**: Builds prompts for document type identification
 - **`QuestionAnswerPromptBuilder`**: Builds prompts for Q&A
 
-**Example:**
-```java
-@Service
-public class DocumentContentExtractionService {
-    // Only responsible for extracting content from files
-    public String extractContentFromPath(Path filePath, String fileName) { ... }
-}
-```
-
 ### 2. Open/Closed Principle (OCP)
 
 Classes are open for extension but closed for modification:
@@ -285,14 +276,6 @@ Classes are open for extension but closed for modification:
 - **`LLMServiceInterface`**: Can add new LLM providers without modifying existing code
 - **`GlobalExceptionHandler`**: Extended by domain-specific handlers (`DocumentExceptionHandler`, `SecurityExceptionHandler`)
 - **`DocumentType` enum**: Can add new document types without changing classification logic
-
-**Example:**
-```java
-// New LLM provider can be added by implementing the interface
-public class HuggingFaceService implements LLMServiceInterface {
-    // Implementation without modifying existing code
-}
-```
 
 ### 3. Liskov Substitution Principle (LSP)
 
@@ -302,13 +285,6 @@ Subtypes must be substitutable for their base types:
 - Exception handlers properly extend `GlobalExceptionHandler`
 - All services implement their interfaces correctly
 
-**Example:**
-```java
-LLMServiceInterface service = llmServiceFactory.getLLMService();
-// Works with both OpenAIService and MockLLMService
-service.answerQuestion(question, context, documentType);
-```
-
 ### 4. Interface Segregation Principle (ISP)
 
 Interfaces are focused and not bloated:
@@ -317,15 +293,6 @@ Interfaces are focused and not bloated:
 - **`DocumentServiceInterface`**: Contains only document-related operations
 - **`UserServiceInterface`**: Contains only user-related operations
 
-**Example:**
-```java
-public interface LLMServiceInterface {
-    DocumentType identifyDocumentType(String fileName, String fileContent);
-    String answerQuestion(String question, String documentContext, DocumentType documentType);
-    // No unnecessary methods
-}
-```
-
 ### 5. Dependency Inversion Principle (DIP)
 
 High-level modules depend on abstractions, not concrete implementations:
@@ -333,20 +300,6 @@ High-level modules depend on abstractions, not concrete implementations:
 - **`DocumentQAService`** depends on `LLMServiceInterface`, not concrete implementations
 - **`RoleAspect`** depends on service abstractions (`RequestContextService`, `RoleValidationService`)
 - **`LLMServiceFactory`** depends on `LLMServiceInterface`
-
-**Example:**
-```java
-@Service
-@RequiredArgsConstructor
-public class DocumentQAService {
-    private final LLMServiceFactory llmServiceFactory; // Depends on factory, not concrete service
-    
-    public QuestionResponse answerQuestion(QuestionRequest request) {
-        LLMServiceInterface llmService = llmServiceFactory.getLLMService(); // Uses interface
-        // ...
-    }
-}
-```
 
 ### Additional OOP Concepts
 
