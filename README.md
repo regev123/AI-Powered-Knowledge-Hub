@@ -105,65 +105,11 @@ The AI-Powered Knowledge Hub follows a **layered architecture** pattern with cle
 
 ## System UML Diagram
 
-### Class Diagram (Simplified)
+### Class Diagram
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Controllers                           │
-├─────────────────────────────────────────────────────────────┤
-│ + DocumentController                                         │
-│ + UserController                                             │
-└─────────────────────────────────────────────────────────────┘
-                            │
-                            │ uses
-                            ▼
-┌─────────────────────────────────────────────────────────────┐
-│                         Services                             │
-├─────────────────────────────────────────────────────────────┤
-│ + DocumentService                                            │
-│ + DocumentQAService                                           │
-│ + UserService                                                │
-│ + DocumentTypeIdentificationService                          │
-│ + DocumentContentExtractionService                           │
-└─────────────────────────────────────────────────────────────┘
-                            │
-                            │ uses
-                            ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      LLM Services                            │
-├─────────────────────────────────────────────────────────────┤
-│ <<interface>>                                                │
-│ LLMServiceInterface                                          │
-│ + identifyDocumentType()                                    │
-│ + answerQuestion()                                           │
-├─────────────────────────────────────────────────────────────┤
-│ + OpenAIService implements LLMServiceInterface              │
-│ + MockLLMService implements LLMServiceInterface            │
-│ + LLMServiceFactory                                          │
-└─────────────────────────────────────────────────────────────┘
-                            │
-                            │ uses
-                            ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      Repositories                            │
-├─────────────────────────────────────────────────────────────┤
-│ + DocumentRepository extends JpaRepository                   │
-│ + UserRepository extends JpaRepository                      │
-└─────────────────────────────────────────────────────────────┘
-                            │
-                            │ uses
-                            ▼
-┌─────────────────────────────────────────────────────────────┐
-│                        Entities                              │
-├─────────────────────────────────────────────────────────────┤
-│ + Document                                                   │
-│ + User                                                       │
-│ + DocumentType (enum)                                        │
-│ + UserRole (enum)                                            │
-└─────────────────────────────────────────────────────────────┘
-```
+![Full System UML Diagram](./Full-System-UML-Diagram.drawio.png)
 
-![Document Upload Diagram](./Sequence-Diagram-Document-Upload-Flow.drawio.png)
+![Document Upload Sequence Diagram](./Sequence-Diagram-Document-Upload-Flow.drawio.png)
 
 ![Question Answering Sequence Diagram](./Sequence-Diagram-Question-Answering-Flow.drawio.png)
 
