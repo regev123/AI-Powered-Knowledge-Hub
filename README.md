@@ -105,10 +105,6 @@ The AI-Powered Knowledge Hub follows a **layered architecture** pattern with cle
 
 ## System UML Diagram
 
-### Class Diagram
-
-![Full System UML Diagram](./Full-System-UML-Diagram.drawio.png)
-
 ![Document Upload Sequence Diagram](./Sequence-Diagram-Document-Upload-Flow.drawio.png)
 
 ![Question Answering Sequence Diagram](./Sequence-Diagram-Question-Answering-Flow.drawio.png)
