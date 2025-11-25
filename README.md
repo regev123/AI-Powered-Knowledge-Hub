@@ -163,28 +163,7 @@ The AI-Powered Knowledge Hub follows a **layered architecture** pattern with cle
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Sequence Diagram: Document Upload Flow
-
-```
-User          Frontend        Controller      Service         LLMService    Repository
- │               │                │              │                │              │
- │──upload──────>│                │              │                │              │
- │               │──POST /api/documents────────>│                │              │
- │               │                │              │                │              │
- │               │                │──uploadDocument()───────────>│              │
- │               │                │              │                │              │
- │               │                │              │──identifyType()──────────────>│
- │               │                │              │                │              │
- │               │                │              │<──DocumentType─────────────────│
- │               │                │              │                │              │
- │               │                │              │──save()───────────────────────>│
- │               │                │              │                │              │
- │               │                │              │<──Document─────────────────────│
- │               │                │              │                │              │
- │               │                │<──DocumentResponse──────────────────────────│
- │               │<──200 OK──────────────────────│                │              │
- │<──Success─────│                │              │                │              │
-```
+![Document Upload Diagram](./Sequence-Diagram-Document-Upload-Flow.drawio.png)
 
 ![Question Answering Sequence Diagram](./Sequence-Diagram-Question-Answering-Flow.drawio.png)
 
